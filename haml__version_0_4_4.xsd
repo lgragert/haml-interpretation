@@ -14,13 +14,13 @@
 
         Elements:
         ----------
-            haml-id:
+            haml-id: A structure containing an identifier of this
             reporting-center:
             patient:
             document-context: What is the use/purpose of this haml document? SOT….SCT?  Platelets?
             Specify what the report is intended for. Is this meant for SOT or is it meant for “Research” or SCT etc.
 
-            Attributes:
+        Attributes:
         -----------
         version: Expected to be '0.4.4' to use this version of the HAML schema.
         </xs:documentation></xs:annotation>
@@ -50,7 +50,7 @@
 
             Attributes:
             -----------
-            - root:        Unique publicly registered identifier for the HML
+            - root:  Unique publicly registered identifier for the HML
             creator's organization.
             (ex: NMDP HL7 id is "2.16.840.1.113883.3.1470")
             Format is expected to be a string of digits and dot
@@ -185,9 +185,12 @@
         <xs:annotation><xs:documentation>
             A working sample may be diluted in preparation for solid-phase-panel analysis.
             This element describes the ratio and substance used for dilution.
+
+            ratio: This is expected to be a dilution ratio, a floating point number usually between 0 and 1.
+            diluent: This is a text description of the diluent substance or buffer
         </xs:documentation></xs:annotation>
         <xs:choice minOccurs="0" maxOccurs="unbounded">
-            <xs:element type="xs:byte" name="ratio" minOccurs="1" maxOccurs="1"/>
+            <xs:element type="xs:float" name="ratio" minOccurs="1" maxOccurs="1"/>
             <xs:element type="xs:string" name="diluent" minOccurs="1" maxOccurs="1"/>
         </xs:choice>
     </xs:complexType>
@@ -233,6 +236,13 @@
             This bead usually has a specificity, which may be an allele name or a serological specificity.
 
             The bead has information about it's corresponding positive and negative controls.
+
+            Elements:
+            ----------
+            - bead-info: Structure containing details on the specificity and identifiers of an individual bead
+            - raw-data: Structure containing measured MFI or raw data as measured in the assay.
+            - converted-data: Structure containing converted MFIs, formulas used, and interpretations of bead-specific results.
+
         </xs:documentation></xs:annotation>
         <xs:choice minOccurs="0" maxOccurs="unbounded">
             <xs:element type="hamlns:bead-info" name="bead-info" minOccurs="0" maxOccurs="1"/>
@@ -243,13 +253,22 @@
 
     <!-- BEAD-INFO -->
     <xs:complexType name="bead-info">
+        <xs:annotation><xs:documentation>
+            Description..
+
+            Elements:
+            ----------
+            - element-name:  Element Description
+
+            Attributes:
+            -----------
+        </xs:documentation></xs:annotation>
         <xs:choice minOccurs="0" maxOccurs="unbounded">
-            <xs:element type="xs:byte" name="bead-id" minOccurs="1" maxOccurs="1"/>
-            <xs:element type="xs:byte" name="negative-control-bead-id" minOccurs="0"/>
-            <xs:element type="xs:byte" name="positive-control-bead-id" minOccurs="0"/>
-            <xs:element type="hamlns:hla-target-type" name="HLA-target-type"/>
-            <!-- TODO serological specificity, is that an ablstring? -->
-            <xs:element type="hamlns:hla-target-serological-specificity" name="HLA-target-serological-specificity"/>
+            <xs:element type="xs:integer" name="bead-id" minOccurs="1" maxOccurs="1"/>
+            <xs:element type="xs:integer" name="negative-control-bead-id" minOccurs="0"/>
+            <xs:element type="xs:integer" name="positive-control-bead-id" minOccurs="0"/>
+            <xs:element type="hamlns:hla-plstring" name="HLA-target-type" minOccurs="0" maxOccurs="1"/>
+            <xs:element type="hamlns:hla-plstring" name="HLA-target-serological-specificity" minOccurs="0" maxOccurs="1"/>
             <xs:element type="xs:string" name="type"/>
             <xs:element type="xs:string" name="control-type"/>
         </xs:choice>
@@ -257,6 +276,16 @@
 
     <!-- RAW-DATA -->
     <xs:complexType name="raw-data">
+        <xs:annotation><xs:documentation>
+            Description..
+
+            Elements:
+            ----------
+            - element-name:  Element Description
+
+            Attributes:
+            -----------
+        </xs:documentation></xs:annotation>
         <xs:choice minOccurs="0" maxOccurs="unbounded">
             <xs:element type="xs:short" name="bead-count"/><!--  number of beads (int) identified in this bead gate -->
             <xs:element type="xs:short" name="sample-raw-MFI"/>
@@ -267,45 +296,115 @@
 
     <!-- CONVERTED-DATA -->
     <xs:complexType name="converted-data">
+        <xs:annotation><xs:documentation>
+            Description..
+
+            Elements:
+            ----------
+            - element-name:  Element Description
+
+            Attributes:
+            -----------
+        </xs:documentation></xs:annotation>
         <xs:choice minOccurs="0" maxOccurs="unbounded">
             <xs:element type="xs:string" name="formula"/>
             <xs:element type="xs:short" name="sample-adjusted-MFI"/>
             <xs:element type="xs:short" name="negative-control-serum-adjusted-MFI" minOccurs="0"/>
             <xs:element type="xs:short" name="positive-control-serum-adjusted-MFI" minOccurs="0"/>
             <xs:element type="hamlns:bead-interpretation" name="bead-interpretation" minOccurs="0" maxOccurs="unbounded"/>
-            <xs:element type="xs:string" name="bead-plausible"/>
-            <!-- TODO: Plausible: Format this string with some standard reasons.
-             One reason is that an AB might target the transmembrane region of an HLA, and this is not a clinically relevant
-             reactivity event..-->
-            <xs:element type="xs:string" name="bead-plausible-reason"/>
+            <xs:element type="xs:boolean" name="bead-plausible"/>
+            <xs:element type="hamlns:bead-plausible-reason" name="bead-plausible-reason"/>
         </xs:choice>
     </xs:complexType>
 
+    <!-- BEAD-PLAUSIBLE-REASON -->
+    <xs:simpleType name="bead-plausible-reason">
+        <xs:annotation><xs:documentation>
+            This field contains descriptions of possible reasons a bead is determined plausible or not.
+            For example, one reason is that an AB might target the transmembrane region of an HLA, and this is not a clinically relevant
+            reactivity event.
+
+            Elements:
+            ----------
+            - element-name:  Element Description
+
+            Attributes:
+            -----------
+        </xs:documentation></xs:annotation>
+        <!--
+        TODO: Is it too restrictive to allow only these reasons?
+        -->
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="transmembrane-antibody" />
+            <xs:enumeration value="self-antigen" />
+        </xs:restriction>
+    </xs:simpleType>
+
     <!-- BEAD-INTERPRETATION -->
     <xs:complexType  name="bead-interpretation" >
+        <xs:annotation><xs:documentation>
+            This structure contains an interpretation of a single bead.
+
+            Elements:
+            ----------
+            - classification-entity: This is the individual or entity who has performed a bead interpretation.
+            - interpretation-reason: This is the reason a bead has been interpreted. For example, a standard MFI threshold (e.g. 500) was used
+            - bead-classification: A text Positive/Negative/Borderline/Unspecified classification.
+            - bead-rank: a numerical bead rank specifying if there was reactivity on this bead.
+        </xs:documentation></xs:annotation>
         <xs:choice minOccurs="0" maxOccurs="unbounded">
             <!-- TODO: Check how the requirements (minOccurs, maxOccurs) works within here, the choice makes these all optional??? -->
             <xs:element type="xs:string" name="classification-entity" minOccurs="0" maxOccurs="1"/>
+            <xs:element type="xs:string" name="interpretation-reason" minOccurs="0" maxOccurs="1"/>
             <xs:element type="hamlns:bead-classification" name="bead-classification" minOccurs="1" maxOccurs="1"/>
             <xs:element type="hamlns:bead-rank" name="bead-rank" minOccurs="1" maxOccurs="1"/>
         </xs:choice>
     </xs:complexType>
 
-    <!-- HLA-TARGET-TYPE -->
-    <xs:simpleType name="hla-target-type">
+    <!-- HLA-PLSTRING -->
+    <xs:simpleType name="hla-plstring">
+        <xs:annotation><xs:documentation>
+            Description..
+
+            Elements:
+            ----------
+            - element-name:  Element Description
+
+            Attributes:
+            -----------
+        </xs:documentation></xs:annotation>
         <xs:restriction base="xs:string">
         </xs:restriction>
     </xs:simpleType>
 
-    <!-- HLA-TARGET-SEROLOGICAL-SPECIFICITY -->
-    <!-- TODO: This might be an AB List string -->
-    <xs:simpleType name="hla-target-serological-specificity">
+    <!-- HLA-ALSTRING -->
+    <xs:simpleType name="hla-alstring">
+        <xs:annotation><xs:documentation>
+            Description..
+
+            Elements:
+            ----------
+            - element-name:  Element Description
+
+            Attributes:
+            -----------
+        </xs:documentation></xs:annotation>
         <xs:restriction base="xs:string">
         </xs:restriction>
     </xs:simpleType>
 
     <!-- BEAD-CLASSIFICATION -->
     <xs:simpleType name="bead-classification">
+        <xs:annotation><xs:documentation>
+            Description..
+
+            Elements:
+            ----------
+            - element-name:  Element Description
+
+            Attributes:
+            -----------
+        </xs:documentation></xs:annotation>
         <xs:restriction base="xs:string">
             <xs:enumeration value="Positive"/>
             <xs:enumeration value="Negative"/>
@@ -333,34 +432,13 @@
             negative-specificities:
         </xs:documentation></xs:annotation>
         <xs:choice minOccurs="0" maxOccurs="unbounded">
-            <xs:element name="interpretation-context" type="xs:boolean"/>
-            <xs:element name="reject-assay" type="xs:string"/>
+            <xs:element name="interpretation-context" type="xs:string"/>
+            <xs:element name="reject-assay" type="xs:boolean"/>
             <xs:element name="reject-reason" type="xs:string"/>
-            <xs:element name="failure-code" type="xs:byte" />
-            <xs:element name="positive-specificities">
-                <xs:complexType>
-                    <xs:choice minOccurs="0" maxOccurs="unbounded">
-                        <xs:element type="xs:string" name="HLA-plstring"/>
-                        <xs:element type="xs:string" name="HLA-ablstring"/>
-                    </xs:choice>
-                </xs:complexType>
-            </xs:element>
-            <xs:element name="questionable-specificities">
-                <xs:complexType>
-                    <xs:choice minOccurs="0" maxOccurs="unbounded">
-                        <xs:element type="xs:string" name="HLA-plstring"/>
-                        <xs:element type="xs:string" name="HLA-ablstring"/>
-                    </xs:choice>
-                </xs:complexType>
-            </xs:element>
-            <xs:element name="negative-specificities">
-                <xs:complexType>
-                    <xs:choice minOccurs="0" maxOccurs="unbounded">
-                        <xs:element type="xs:string" name="HLA-plstring"/>
-                        <xs:element type="xs:string" name="HLA-ablstring"/>
-                    </xs:choice>
-                </xs:complexType>
-            </xs:element>
+            <xs:element name="failure-code" type="xs:integer" />
+            <xs:element name="positive-specificities" type="hla-alstring"/>
+            <xs:element name="questionable-specificities" type="hla-alstring"/>
+            <xs:element name="negative-specificities" type="hla-alstring"/>
         </xs:choice>
     </xs:complexType>
 
@@ -373,9 +451,18 @@
         <xs:union memberTypes="xs:dateTime xs:date"/>
     </xs:simpleType>
 
-
     <!-- BEAD-CLASSIFICATION -->
     <xs:simpleType name="bead-rank">
+        <xs:annotation><xs:documentation>
+            Description..
+
+            Elements:
+            ----------
+            - element-name:  Element Description
+
+            Attributes:
+            -----------
+        </xs:documentation></xs:annotation>
         <xs:restriction base="xs:string">
             <xs:enumeration value="8"/>
             <xs:enumeration value="6"/>

@@ -177,6 +177,11 @@ def process_xml_file(input_file_path, output_file_path):
                                     classification_entity.text = "Python-Demo"
                                     bead_interpretation.append(classification_entity)
                                     
+                                    # Add interpretation reason
+                                    interpretation_reason = create_namespaced_element('interpretation-reason')
+                                    interpretation_reason.text = "MFI-cutoff-setting"
+                                    bead_interpretation.append(interpretation_reason)
+                                    
                                     # Add bead classification and rank based on MFI
                                     classification, rank = get_bead_classification(mfi)
                                     
