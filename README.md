@@ -4,7 +4,7 @@ HLA Antibody Markup Language is a data formats standard for reporting raw data f
 
 This repository demonstrates how HAML files that contain only raw MFI data for an SAB panel and the default classification from the vendor software can be modified to add a second per-bead interpretation `bead-classification` and a per-assay `interpretation` block with a list of HLA antigens for reporting to allocation systems.
 
-This script demonstrates a very simple interpretation scheme using MFI thresholds for bead classifications (greater than 2000 MFI for positive, between 1000 and 2000 MFI for borderline/questionable, and less than 1000 MFI for negative). The name of the per-assay `interpretation-software` and per-bead `classification-entity` added by this script are indicated as `Python-Demo` version `0.0.1`. The `interpretation-reason` is set to `MFI-cutoff-setting`.
+This script demonstrates what a very simple automated antibody analysis program might do with a basic interpretation scheme using MFI threshold settings to make a new set of bead classifications beyond what the vendor software provided (greater than 2000 MFI for positive, between 1000 and 2000 MFI for borderline/questionable, and less than 1000 MFI for negative). The name of the per-assay `interpretation-software` and per-bead `classification-entity` added by this script are indicated as `Python-Demo` version `0.0.1`. The `interpretation-reason` made this script is labeled as `MFI-cutoff-setting` for all beads.
 
 The interpretation block uses the `bead-classification` assignments to make phenotype list strings (HLA-plstring) for positive, questionable, and negative categories. The PL string specificities are then converted into OPTN antigen categories in antibody list strings (HLA-abstring) for reporting to the OPTN organ allocation system. The file `antigen_conversion_table_with_rules.csv` contains the mappings between WHO allele names and OPTN antigen categories.
 
@@ -19,6 +19,8 @@ Outputs XML file with "_interpretation" appended to filename prefix:
 ```
 OLSampleCI2025-05-13_haml_interpreted.xml
 ```
+
+The input HAML file is augmented
 
 
 More sophisticated antibody analysis techniques involving pattern analysis or identification of false positives could be substituted for the simple `MFI-cutoff-setting` interpretation reason logic in this demo. 
