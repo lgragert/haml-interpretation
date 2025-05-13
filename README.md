@@ -27,6 +27,7 @@ More sophisticated antibody analysis techniques involving pattern analysis or id
 - Class II antigen specificities are based on the DQB1 and DPB1 alleles instead of the heterodimer in this demo. The DQA1 and DPA1 alleles are ignored.
 - Allele-specific antigen categories aren't identified in this demo.
 - Candidate HLA typing data is not used as input in this demo, but could in the future to rule out self-antigens.
+- In addition to bead-level interpretation reasons, assay-level patterns/features that are identified (e.g. Bw4-pattern, no-clear-cutoff) could be also be documented in the interpretation block when this feature is supported in the HAML schema.
 
 The HAML schema is maintained in this GitHub repository of the Society of Immune Polymorphism:
 
